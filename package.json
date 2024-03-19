@@ -1,0 +1,18 @@
+{
+  "name": "cognito-user-registration",
+  "version": "1.0.0",
+  "description": "This module is for the lamda trigger that will register new user into the DB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ogma Conceptions",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1553.0",
+    "aws-serverless-express": "^3.4.0",
+    "dotenv": "^16.4.4",
+    "mysql2": "^3.5.1",
+    "sequelize": "^6.32.1"
+  }
+}
