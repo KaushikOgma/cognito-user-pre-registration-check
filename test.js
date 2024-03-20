@@ -15,7 +15,7 @@ const mockEvent = {
     "request": {
       "userAttributes": {
         "custom:myCustomAttribute": "myCustomValue",
-        "email": "rvp8kxtxx9@privaterelay.appleid.com",
+        "email": "prince@appstango.com",
         "email_verified": "false"
       },
       "validationData": null

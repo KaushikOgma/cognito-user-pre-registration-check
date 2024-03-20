@@ -1,10 +1,11 @@
 // Import Required Modules
 const AWS = require('aws-sdk');
+require('dotenv').config();
 const sequelize = require('./utilities/database');
 
 const _s3AwsId = process.env.AWS_ID;
 const _s3AwsSecret = process.env.AWS_SECRET;
-const _s3AwsRegion = process.env.AWS_REGION;
+const _s3AwsRegion = process.env.AWS_COGNITO_REGION;
 const _awsPatientPoolId = process.env.COGNITO_PATIENT_POOL_ID;
 
 // Configure AWS credentials
@@ -24,28 +25,19 @@ async function checkIfUserExists(email) {
     // Define parameters for AdminGetUser operation
     const params = {
       UserPoolId: _awsPatientPoolId,
-      Username: email // Use email as the username since email is unique
+      Filter: `email = "${email}"`,
+      // Username: email // Use email as the username since email is unique
     };
     console.log("checkIfUserExists:: params:: ",params)
     // Call AdminGetUser operation to retrieve user information
-    const userData = await cognito.adminGetUser(params).promise();
-
-    console.log("---------------------------------------------------------")
-    console.log("userData:: ",userData)
-    console.log("---------------------------------------------------------")
-
-    // If the user is found, return true
-    return true;
-  } catch (error) {
-    // If the user is not found, AWS will throw an error
-    // Check if the error code indicates that the user does not exist
-    if (error.code === 'UserNotFoundException') {
-      return false;
+    const userData = await cognito.listUsers(params).promise();
+    if (userData.Users.length > 0){
+      return true
     } else {
-      // Handle other errors
-      console.error('Error:', error);
-      throw error;
+      return false
     }
+  } catch (error) {
+    return false;
   }
 }
 
@@ -56,7 +48,8 @@ exports.handler = async (event, context) => {
       const email = event.request.userAttributes.email;
 
       // Check if the email already exists in the user pool
-      const userExists = await checkIfUserExists(email);
+      console.log("email: ",email)
+      const userExists = await checkIfUserExists(email.toLowerCase());
       console.log("userExists: ",userExists)
      
       if (userExists) {
